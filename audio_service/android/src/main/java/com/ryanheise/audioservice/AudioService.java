@@ -515,9 +515,11 @@ public class AudioService extends MediaBrowserServiceCompat {
             final PlaybackStateCompat.CustomAction customAction = createCustomAction(control);
             if (customAction != null) {
                 customActions.add(customAction);
-            } else {
-                nativeActions.add(createAction(control.icon, control.label, control.actionCode));
             }
+
+            // -- another type of pending intent is created also for custom actions
+            // -- some OEMs like OxygenOS 15 won't show custom actions without this.
+            nativeActions.add(createAction(control.icon, control.label, control.actionCode));
         }
         this.compactActionIndices = compactActionIndices;
         boolean wasPlaying = this.playing;
