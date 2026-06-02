@@ -6,11 +6,11 @@ import 'dart:ui';
 
 import 'package:audio_service_platform_interface/audio_service_platform_interface.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:rxdart/rxdart.dart';
 
 AudioServicePlatform _platform = AudioServicePlatform.instance;

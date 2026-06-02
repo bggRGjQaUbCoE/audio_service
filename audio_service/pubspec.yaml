@@ -36,7 +36,11 @@ dependencies:
 
   audio_session: '>=0.1.25 <0.3.0'
   rxdart: '>=0.26.0 <0.29.0'
-  flutter_cache_manager: ^3.3.1
+  cached_network_image_ce:
+    git:
+      url: https://github.com/bggRGjQaUbCoE/flutter_cached_network_image_ce.git
+      path: cached_network_image
+      ref: develop
   clock: ^1.1.0
   js: '>=0.6.3 <0.8.0'
   flutter:
