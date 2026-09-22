@@ -372,7 +372,7 @@ public class AudioService extends MediaBrowserServiceCompat {
         artBitmapCache.evictAll();
         compactActionIndices = null;
         releaseMediaSession();
-        ServiceCompat.stopForeground(this, config.androidResumeOnClick ? STOP_FOREGROUND_DETACH : STOP_FOREGROUND_REMOVE);
+        ServiceCompat.stopForeground(this, config.androidResumeOnClick ? ServiceCompat.STOP_FOREGROUND_DETACH : ServiceCompat.STOP_FOREGROUND_REMOVE);
         // This still does not solve the Android 11 problem.
         // if (notificationCreated) {
         //     NotificationManager notificationManager = getNotificationManager();
@@ -541,7 +541,7 @@ public class AudioService extends MediaBrowserServiceCompat {
         if (errorCode != null && errorMessage != null)
             stateBuilder.setErrorMessage(errorCode, errorMessage);
         else if (errorMessage != null)
-            stateBuilder.setErrorMessage(-987654, errorMessage);
+            stateBuilder.setErrorMessage(PlaybackStateCompat.ERROR_CODE_UNKNOWN_ERROR, errorMessage);
 
         if (mediaMetadata != null) {
             // Update the progress bar in the browse view as content is playing as explained
@@ -558,15 +558,18 @@ public class AudioService extends MediaBrowserServiceCompat {
 
         if (!wasPlaying && playing) {
             enterPlayingState();
-        } else if (wasPlaying && !playing) {
-            exitPlayingState();
+        } else {
+            if (processingState != AudioProcessingState.idle && notificationChanged) {
+                updateNotification();
+            }
+            if (wasPlaying && !playing) {
+                exitPlayingState();
+            }
         }
 
         if (oldProcessingState != AudioProcessingState.idle && processingState == AudioProcessingState.idle) {
             // TODO: Handle completed state as well?
             stop();
-        } else if (processingState != AudioProcessingState.idle && notificationChanged) {
-            updateNotification();
         }
     }
 
@@ -719,7 +722,7 @@ public class AudioService extends MediaBrowserServiceCompat {
     }
 
     private void exitForegroundState() {
-        ServiceCompat.stopForeground(this, STOP_FOREGROUND_DETACH);
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_DETACH);
         releaseWakeLock();
     }
 

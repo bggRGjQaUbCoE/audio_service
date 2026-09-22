@@ -12,4 +12,12 @@ public class AudioServiceActivity extends FlutterActivity {
     public FlutterEngine provideFlutterEngine(@NonNull Context context) {
         return AudioServicePlugin.getFlutterEngine(context);
     }
+
+    @Override
+    protected void onDestroy() {
+        if (AudioService.instance != null) {
+            AudioService.instance.stop();
+        }
+        super.onDestroy();
+    }
 }
