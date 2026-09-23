@@ -54,6 +54,7 @@ import android.util.Log;
 /**
  * AudioservicePlugin
  */
+@SuppressWarnings("deprecation")
 public class AudioServicePlugin implements FlutterPlugin, ActivityAware {
     private static String flutterEngineId = "audio_service_engine";
     /** Must be called BEFORE any FlutterEngine is created. e.g. in Application class. */

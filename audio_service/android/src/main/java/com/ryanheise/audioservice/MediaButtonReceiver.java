@@ -6,6 +6,7 @@ import static com.ryanheise.audioservice.AudioService.NOTIFICATION_CUSTOM_ACTION
 import android.content.Context;
 import android.content.Intent;
 
+@SuppressWarnings("deprecation")
 public class MediaButtonReceiver extends androidx.media.session.MediaButtonReceiver {
     public static final String ACTION_NOTIFICATION_DELETE = "com.ryanheise.audioservice.intent.action.ACTION_NOTIFICATION_DELETE";
 
