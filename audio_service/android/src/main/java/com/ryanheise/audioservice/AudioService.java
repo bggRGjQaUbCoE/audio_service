@@ -61,6 +61,9 @@ public class AudioService extends MediaBrowserServiceCompat {
 
     private static final int NOTIFICATION_ID = 1124;
     private static final int REQUEST_CONTENT_INTENT = 1000;
+    public static final String NOTIFICATION_CUSTOM_ACTION = "com.ryanheise.audioservice.NOTIFICATION_CUSTOM_ACTION";
+    public static final String NOTIFICATION_CUSTOM_ACTION_NAME = "com.ryanheise.audioservice.NOTIFICATION_CUSTOM_ACTION_NAME";
+    public static final String NOTIFICATION_CUSTOM_ACTION_EXTRAS = "com.ryanheise.audioservice.NOTIFICATION_CUSTOM_ACTION_EXTRAS";
     public static final String NOTIFICATION_CLICK_ACTION = "com.ryanheise.audioservice.NOTIFICATION_CLICK";
     public static final String CUSTOM_ACTION_STOP = "com.ryanheise.audioservice.action.STOP";
     public static final String CUSTOM_ACTION_FAST_FORWARD = "com.ryanheise.audioservice.action.FAST_FORWARD";
@@ -108,6 +111,11 @@ public class AudioService extends MediaBrowserServiceCompat {
 
     public static void init(ServiceListener listener) {
         AudioService.listener = listener;
+    }
+
+    public static void onCustomAction(String action) {
+        if (listener == null) return;
+        listener.onCustomAction(action, null);
     }
 
     public static int toKeyCode(long action) {
