@@ -428,10 +428,17 @@ public class AudioService extends MediaBrowserServiceCompat {
         return getResources().getIdentifier(resourceName, resourceType, getApplicationContext().getPackageName());
     }
 
-    NotificationCompat.Action createAction(String resource, String label, long actionCode) {
+    private int customKeyCode = 0;
+
+    NotificationCompat.Action createAction(String resource, String label, long actionCode, String customAction) {
         int iconId = getResourceId(resource);
-        return new NotificationCompat.Action(iconId, label,
-                buildMediaButtonPendingIntent(actionCode));
+        PendingIntent intent;
+        if (customAction != null) {
+            intent = buildCustomActionPendingIntent(++customKeyCode, customAction);
+        } else {
+            intent = buildMediaButtonPendingIntent(actionCode);
+        }
+        return new NotificationCompat.Action(iconId, label, intent);
     }
 
     private boolean needCustomMediaControl(MediaControl control) {
@@ -485,6 +492,17 @@ public class AudioService extends MediaBrowserServiceCompat {
         return null;
     }
 
+    PendingIntent buildCustomActionPendingIntent(int code, String customAction) {
+        Intent intent = new Intent(this, MediaButtonReceiver.class);
+        intent.setAction(NOTIFICATION_CUSTOM_ACTION);
+        intent.putExtra(NOTIFICATION_CUSTOM_ACTION_NAME, customAction);
+        int flags = 0;
+        if (Build.VERSION.SDK_INT >= 23) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getBroadcast(this, code, intent, flags);
+    }
+
     PendingIntent buildMediaButtonPendingIntent(long action) {
         int keyCode = toKeyCode(action);
         if (keyCode == KeyEvent.KEYCODE_UNKNOWN)
@@ -525,10 +543,13 @@ public class AudioService extends MediaBrowserServiceCompat {
             if (customAction != null) {
                 customActions.add(customAction);
             }
-
             // -- another type of pending intent is created also for custom actions
             // -- some OEMs like OxygenOS 15 won't show custom actions without this.
-            nativeActions.add(createAction(control.icon, control.label, control.actionCode));
+            if (control.customAction != null) {
+                nativeActions.add(createAction(control.icon, control.label, control.actionCode, control.customAction.name));
+            } else {
+                nativeActions.add(createAction(control.icon, control.label, control.actionCode, null));
+            }
         }
         this.compactActionIndices = compactActionIndices;
         boolean wasPlaying = this.playing;
