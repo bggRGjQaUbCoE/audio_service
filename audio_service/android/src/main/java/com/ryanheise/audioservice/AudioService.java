@@ -567,19 +567,24 @@ public class AudioService extends MediaBrowserServiceCompat {
         mediaSession.setShuffleMode(shuffleMode);
         mediaSession.setCaptioningEnabled(captioningEnabled);
 
+        boolean exitPlaying = wasPlaying && !playing;
         if (!wasPlaying && playing) {
             enterPlayingState();
         } else {
             if (processingState != AudioProcessingState.idle && notificationChanged) {
                 updateNotification();
             }
-            if (wasPlaying && !playing) {
+            if (exitPlaying) {
                 exitPlayingState();
             }
         }
 
         if (oldProcessingState != AudioProcessingState.idle && processingState == AudioProcessingState.idle) {
             // TODO: Handle completed state as well?
+            updateNotification();
+            if (!exitPlaying) {
+                exitPlayingState();
+            }
             stop();
         }
     }
